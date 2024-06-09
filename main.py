@@ -2,7 +2,7 @@ import streamlit as st
 from login import login_page
 from signup import signup_page
 from index import camera_scan_page, gallery_and_details_page, homepage
-from db import check_db_connection
+from db import create_connection
 
 # def set_custom_css():
 #     st.markdown(
@@ -25,7 +25,7 @@ def main():
     st.sidebar.title("Navigasi")
 
     # Periksa koneksi database dan tampilkan status
-    if check_db_connection():
+    if create_connection():
         st.sidebar.success("Koneksi ke database berhasil")
     else:
         st.sidebar.error("Gagal terhubung ke database")
