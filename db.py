@@ -8,10 +8,3 @@ def create_connection():
            print(e)
            return None
 
-def verify_user(username, password):
-       conn = create_connection()
-       if conn is None:
-           raise AttributeError("Failed to create database connection.")
-       cursor = conn.cursor()
-       # Lanjutkan dengan query untuk memverifikasi pengguna
-
