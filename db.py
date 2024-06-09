@@ -1,28 +1,17 @@
-import mysql.connector
-from mysql.connector import Error
+import sqlite3
 
-# Konfigurasi koneksi ke database MySQL
-db_config = {
-    'user': 'root',                
-    'password': '',                
-    'host': '127.0.0.1',                         
-    'database': 'dbtomat'          
-}
+def create_connection():
+       try:
+           conn = sqlite3.connect('database.db')  # Sesuaikan dengan database yang Anda gunakan
+           return conn
+       except sqlite3.Error as e:
+           print(e)
+           return None
 
-# Fungsi untuk membuat koneksi ke database
-def get_db_connection():
-    try:
-        conn = mysql.connector.connect(**db_config)
-        if conn.is_connected():
-            return conn
-    except Error as e:
-        print(f"Error: {e}")  # Menggunakan print untuk debug
-        return None
+def verify_user(username, password):
+       conn = create_connection()
+       if conn is None:
+           raise AttributeError("Failed to create database connection.")
+       cursor = conn.cursor()
+       # Lanjutkan dengan query untuk memverifikasi pengguna
 
-# Fungsi untuk memeriksa koneksi
-def check_db_connection():
-    conn = get_db_connection()
-    if conn and conn.is_connected():
-        conn.close()
-        return True
-    return False
