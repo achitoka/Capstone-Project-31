@@ -1,5 +1,5 @@
 import bcrypt
-from db import get_db_connection
+from db import create_connection
 
 # Fungsi untuk menambahkan pengguna baru ke database
 def add_user(username, password):
