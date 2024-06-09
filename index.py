@@ -41,7 +41,13 @@ if not os.path.exists('saved_images'):
     os.makedirs('saved_images')
 
 # Memuat model Keras (.h5)
-model = load_model("finalModel_31.h5")
+model_path = "finalModel_31.h5"
+if os.path.exists(model_path):
+    print(f"Model found at {model_path}")
+else:
+    print(f"Model not found at {model_path}")
+
+model = load_model(model_path)
 
 # Definisi halaman
 def homepage():
