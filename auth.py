@@ -1,32 +1,59 @@
+import sqlite3
 import bcrypt
-from db import create_connection
 
-# Fungsi untuk menambahkan pengguna baru ke database
-def add_user(username, password):
-    hashed_pw = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-    conn = create_connection()
-    cursor = conn.cursor()
+# Konfigurasi koneksi ke database SQLite
+db_config = 'dbtomat.db'  # Nama file database SQLite
+
+# Fungsi untuk membuat koneksi ke database SQLite
+def get_db_connection():
     try:
-        cursor.execute("INSERT INTO users (username, password) VALUES (%s, %s)", (username, hashed_pw))
+        conn = sqlite3.connect(db_config)
+        return conn
+    except sqlite3.Error as e:
+        print(f"Error: {e}")
+        return None
+
+def create_user_table():
+    conn = get_db_connection()
+    if conn:
+        cursor = conn.cursor()
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT NOT NULL UNIQUE,
+                password TEXT NOT NULL
+            )
+        ''')
         conn.commit()
-        return True
-    except mysql.connector.Error as err:
-        return False
-    finally:
-        cursor.close()
         conn.close()
 
-# Fungsi untuk memverifikasi kredensial pengguna
-def verify_user(username, password):
-    conn = create_connection()
-    cursor = conn.cursor()
+def add_user(username, password):
     try:
-        cursor.execute("SELECT password FROM users WHERE username = %s", (username,))
-        result = cursor.fetchone()
-        if result:
-            stored_password = result[0].encode('utf-8')
-            return bcrypt.checkpw(password.encode('utf-8'), stored_password)
-        return False
-    finally:
-        cursor.close()
-        conn.close()
+        conn = get_db_connection()
+        if conn:
+            cursor = conn.cursor()
+            hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+            cursor.execute('INSERT INTO users (username, password) VALUES (?, ?)', (username, hashed_password))
+            conn.commit()
+            conn.close()
+            return True
+    except sqlite3.Error as err:
+        print(f"Error: {err}")
+    return False
+
+def verify_user(username, password):
+    try:
+        conn = get_db_connection()
+        if conn:
+            cursor = conn.cursor()
+            cursor.execute('SELECT password FROM users WHERE username = ?', (username,))
+            result = cursor.fetchone()
+            conn.close()
+            if result and bcrypt.checkpw(password.encode('utf-8'), result[0]):
+                return True
+    except sqlite3.Error as err:
+        print(f"Error: {err}")
+    return False
+
+# Buat tabel pengguna saat modul diimpor
+create_user_table()
