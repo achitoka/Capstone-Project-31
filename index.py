@@ -100,7 +100,7 @@ def camera_scan_page():
                     predictions = predict_image(frame, model)
                     class_label = get_class_label(predictions)[0]
 
-                    # Menggambar bingkai hijau jika prediksi adalah 'ripe'
+                    # Menggambar bingkai hijau jika prediksi adalah 'Ripe'
                     if class_label == 'Ripe':
                         # Menggambar bingkai hijau di sekitar gambar (margin 10 piksel)
                         start_point = (10, 10)
