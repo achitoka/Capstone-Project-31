@@ -5,7 +5,6 @@ import tensorflow as tf
 from tensorflow.keras.models import load_model
 import cv2
 import os
-import h5py
 
 # Fungsi untuk memproses dan memprediksi gambar
 def predict_image(image, model):
@@ -42,12 +41,7 @@ if not os.path.exists('saved_images'):
     os.makedirs('saved_images')
 
 # Memuat model Keras (.h5)
-try:
-    with h5py.File("finalModel_31.h5", "r") as f:
-        print("File is valid")
-except Exception as e:
-    print(f"Error validating file: {e}")
-
+model = load_model("finalModel_31.h5")
 
 # Definisi halaman
 def homepage():
