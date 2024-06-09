@@ -6,12 +6,6 @@ from tensorflow.keras.models import load_model
 import cv2
 import os
 
-# Fungsi untuk memuat model Keras (.h5)
-@st.cache_resource
-def load_keras_model(model_path):
-    model = load_model(model_path)
-    return model
-
 # Fungsi untuk memproses dan memprediksi gambar
 def predict_image(image, model):
     # Mengubah ukuran gambar sesuai kebutuhan model (misalnya 224x224)
