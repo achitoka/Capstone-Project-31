@@ -1,6 +1,5 @@
 bcrypt
 streamlit
-mysql-connector-python
 Pillow
 numpy
 tensorflow
