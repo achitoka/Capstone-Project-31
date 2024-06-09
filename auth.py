@@ -4,7 +4,7 @@ from db import get_db_connection
 # Fungsi untuk menambahkan pengguna baru ke database
 def add_user(username, password):
     hashed_pw = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-    conn = get_db_connection()
+    conn = create_connection()
     cursor = conn.cursor()
     try:
         cursor.execute("INSERT INTO users (username, password) VALUES (%s, %s)", (username, hashed_pw))
@@ -18,7 +18,7 @@ def add_user(username, password):
 
 # Fungsi untuk memverifikasi kredensial pengguna
 def verify_user(username, password):
-    conn = get_db_connection()
+    conn = create_connection()
     cursor = conn.cursor()
     try:
         cursor.execute("SELECT password FROM users WHERE username = %s", (username,))
