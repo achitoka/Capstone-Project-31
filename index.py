@@ -9,20 +9,11 @@ import os
 # Fungsi untuk memuat model Keras (.h5)
 @st.cache_resource
 def load_keras_model(model_path):
-    try:
-        if not os.path.exists(model_path):
-            st.error(f"File model tidak ditemukan: {model_path}")
-            return None
-        model = load_model(model_path)
-        return model
-    except Exception as e:
-        st.error(f"Gagal memuat model: {e}")
-        return None
+    model = load_model(model_path)
+    return model
 
 # Fungsi untuk memproses dan memprediksi gambar
 def predict_image(image, model):
-    if model is None:
-        return None
     # Mengubah ukuran gambar sesuai kebutuhan model (misalnya 224x224)
     img = cv2.resize(image, (224, 224))
     # Mengubah gambar menjadi array numpy
@@ -37,8 +28,6 @@ def predict_image(image, model):
 
 # Fungsi untuk memetakan prediksi ke label kelas asli
 def get_class_label(predictions):
-    if predictions is None:
-        return ["Error"]
     class_labels = ['Ripe', 'Unripe', 'Damaged', 'Old']
     class_index = np.argmax(predictions, axis=1)
     return [class_labels[index] for index in class_index]
@@ -58,8 +47,7 @@ if not os.path.exists('saved_images'):
     os.makedirs('saved_images')
 
 # Memuat model Keras (.h5)
-model_path = os.path.abspath("finalModel_31.h5")
-model = load_keras_model(model_path)
+model = load_keras_model("finalModel_31.h5")
 
 # Definisi halaman
 def homepage():
@@ -112,7 +100,7 @@ def camera_scan_page():
                     predictions = predict_image(frame, model)
                     class_label = get_class_label(predictions)[0]
 
-                    # Menggambar bingkai hijau jika prediksi adalah 'Ripe'
+                    # Menggambar bingkai hijau jika prediksi adalah 'ripe'
                     if class_label == 'Ripe':
                         # Menggambar bingkai hijau di sekitar gambar (margin 10 piksel)
                         start_point = (10, 10)
@@ -194,13 +182,3 @@ def gallery_and_details_page():
             if st.button(f"Hapus gambar", key=f"hapus_{img_file}"):
                 os.remove(img_path)
                 st.experimental_rerun()
-
-# Tentukan halaman yang akan ditampilkan
-page_names_to_funcs = {
-    "Beranda": homepage,
-    "Pemindaian Kamera": camera_scan_page,
-    "Galeri dan Rincian": gallery_and_details_page,
-}
-
-selected_page = st.sidebar.selectbox("Pilih halaman", page_names_to_funcs.keys())
-page_names_to_funcs[selected_page]()
