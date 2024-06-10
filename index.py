@@ -6,6 +6,12 @@ from tensorflow.keras.models import load_model
 import cv2
 import os
 
+# Fungsi untuk memuat model Keras (.h5)
+@st.cache_resource
+def load_keras_model(model_path):
+    model = load_model(model_path)
+    return model
+
 # Fungsi untuk memproses dan memprediksi gambar
 def predict_image(image, model):
     # Mengubah ukuran gambar sesuai kebutuhan model (misalnya 224x224)
@@ -41,13 +47,7 @@ if not os.path.exists('saved_images'):
     os.makedirs('saved_images')
 
 # Memuat model Keras (.h5)
-# model_path = "finalModel_31.h5"
-# if os.path.exists(model_path):
-#     print(f"Model found at {model_path}")
-# else:
-#     print(f"Model not found at {model_path}")
-
-# model = load_model(model_path)
+model = load_keras_model("finalModel_31.h5")
 
 # Definisi halaman
 def homepage():
