@@ -12,6 +12,9 @@ def load_keras_model(model_path):
     model = load_model(model_path)
     return model
 
+# Memuat model Keras (.h5)
+model = load_keras_model("finalModel_31.h5")
+
 # Fungsi untuk memproses dan memprediksi gambar
 def predict_image(image, model):
     # Mengubah ukuran gambar sesuai kebutuhan model (misalnya 224x224)
@@ -45,9 +48,6 @@ def get_prediction_description(class_label):
 # Membuat folder saved_images jika belum ada
 if not os.path.exists('saved_images'):
     os.makedirs('saved_images')
-
-# Memuat model Keras (.h5)
-model = load_keras_model("finalModel_31.h5")
 
 # Definisi halaman
 def homepage():
