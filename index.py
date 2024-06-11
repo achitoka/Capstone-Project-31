@@ -67,7 +67,6 @@ def get_user_images(user_id):
             user_images.append(img_file)
     return user_images
 
-# Halaman untuk melakukan pemindaian kamera
 def camera_scan_page():
     st.header("Pemindaian Kamera")
 
@@ -78,7 +77,7 @@ def camera_scan_page():
     stframe = st.empty()
 
     if run:
-        cap = cv2.VideoCapture(1)
+        cap = cv2.VideoCapture(0)
         previous_frame = None
         while cap.isOpened():
             ret, frame = cap.read()
