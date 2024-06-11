@@ -6,19 +6,6 @@ from tensorflow.keras.models import load_model
 import cv2
 import os
 
-import h5py
-st.write("h5py version:", h5py.__version__)
-st.write("TensorFlow version:", tf.__version__)
-
-
-# # Periksa direktori kerja saat ini
-# current_directory = os.getcwd()
-# st.write(f"Current working directory: {current_directory}")
-
-# # Daftar semua file dalam direktori kerja saat ini
-# files_in_directory = os.listdir(current_directory)
-# st.write("Files in the current directory:", files_in_directory)
-
 # Fungsi untuk memproses dan memprediksi gambar
 def predict_image(image, model):
     if model is None:
