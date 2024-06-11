@@ -6,13 +6,13 @@ from tensorflow.keras.models import load_model
 import cv2
 import os
 
-# Periksa direktori kerja saat ini
-current_directory = os.getcwd()
-st.write(f"Current working directory: {current_directory}")
+# # Periksa direktori kerja saat ini
+# current_directory = os.getcwd()
+# st.write(f"Current working directory: {current_directory}")
 
-# Daftar semua file dalam direktori kerja saat ini
-files_in_directory = os.listdir(current_directory)
-st.write("Files in the current directory:", files_in_directory)
+# # Daftar semua file dalam direktori kerja saat ini
+# files_in_directory = os.listdir(current_directory)
+# st.write("Files in the current directory:", files_in_directory)
 
 # Fungsi untuk memproses dan memprediksi gambar
 def predict_image(image, model):
@@ -53,7 +53,7 @@ if not os.path.exists('saved_images'):
     os.makedirs('saved_images')
 
 # Memuat model Keras (.h5)
-model = load_model("finalModel_31.h5")
+# model = load_model("finalModel_31.h5")
 
 # Definisi halaman
 def homepage():
