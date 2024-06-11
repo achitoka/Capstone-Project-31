@@ -6,12 +6,6 @@ from tensorflow.keras.models import load_model
 import cv2
 import os
 
-# Fungsi untuk memuat model Keras (.h5)
-@st.cache_resource
-def load_keras_model(model_path):
-    model = load_model(model_path)
-    return model
-
 # Fungsi untuk memproses dan memprediksi gambar
 def predict_image(image, model):
     if model is None:
@@ -51,7 +45,7 @@ if not os.path.exists('saved_images'):
     os.makedirs('saved_images')
 
 # Memuat model Keras (.h5)
-model_path = load_keras_model("finalModel_31.h5")
+model = load_keras_model("finalModel_31.h5")
 
 # Definisi halaman
 def homepage():
