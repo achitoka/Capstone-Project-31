@@ -7,8 +7,8 @@ import cv2
 import os
 
 import h5py
-print("h5py version:", h5py.__version__)
-print("TensorFlow version:", tf.__version__)
+st.write("h5py version:", h5py.__version__)
+st.write("TensorFlow version:", tf.__version__)
 
 
 # # Periksa direktori kerja saat ini
@@ -58,7 +58,7 @@ if not os.path.exists('saved_images'):
     os.makedirs('saved_images')
 
 # Memuat model Keras (.h5)
-# model = load_model("finalModel_31.h5")
+model = load_model("finalModel_31.h5")
 
 # Definisi halaman
 def homepage():
