@@ -6,6 +6,11 @@ from tensorflow.keras.models import load_model
 import cv2
 import os
 
+import h5py
+print("h5py version:", h5py.__version__)
+print("TensorFlow version:", tf.__version__)
+
+
 # # Periksa direktori kerja saat ini
 # current_directory = os.getcwd()
 # st.write(f"Current working directory: {current_directory}")
