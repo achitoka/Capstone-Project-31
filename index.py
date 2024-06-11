@@ -70,69 +70,25 @@ def get_user_images(user_id):
 def camera_scan_page():
     st.header("Pemindaian Kamera")
 
-    # Menjalankan kamera
-    run = st.checkbox('Jalankan Kamera')
+    # Mengambil gambar dari webcam
+    picture = st.camera_input("Jalankan Kamera")
 
-    # Placeholder untuk frame video
-    stframe = st.empty()
+    if picture:
+        # Membaca gambar
+        img = Image.open(picture)
+        st.image(img, caption='Gambar dari Kamera', use_column_width=True)
 
-    if run:
-        # Coba buka kamera dengan indeks yang berbeda
-        cap = None
-        for i in range(5):  # Coba hingga 5 perangkat
-            cap = cv2.VideoCapture(i)
-            if cap.isOpened():
-                st.write(f"Kamera ditemukan pada indeks {i}")
-                break
-            cap.release()
-        else:
-            st.write("Tidak ada kamera yang tersedia.")
-            return
+        # Konversi gambar ke array numpy
+        img_array = np.array(img)
 
-        previous_frame = None
-        while cap.isOpened():
-            ret, frame = cap.read()
-            if not ret:
-                st.write("Gagal mendapatkan frame dari kamera.")
-                break
+        # Melakukan prediksi pada gambar yang diambil
+        predictions = predict_image(img_array, model)
+        class_label = get_class_label(predictions)[0]
 
-            # Deteksi perubahan dalam frame untuk menentukan kehadiran objek
-            gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            if previous_frame is not None:
-                diff_frame = cv2.absdiff(previous_frame, gray_frame)
-                _, thresh_frame = cv2.threshold(diff_frame, 30, 255, cv2.THRESH_BINARY)
-                non_zero_count = np.count_nonzero(thresh_frame)
+        st.write(f"Prediction: {class_label}")
 
-                if non_zero_count > 10000:  # Mengubah nilai ini sesuai kebutuhan
-                    # Melakukan prediksi pada frame saat ini
-                    predictions = predict_image(frame, model)
-                    class_label = get_class_label(predictions)[0]
-
-                    # Menggambar bingkai hijau jika prediksi adalah 'Ripe'
-                    if class_label == 'Ripe':
-                        # Menggambar bingkai hijau di sekitar gambar (margin 10 piksel)
-                        start_point = (10, 10)
-                        end_point = (frame.shape[1] - 10, frame.shape[0] - 10)
-                        color = (0, 255, 0)  # Warna hijau dalam BGR
-                        thickness = 3  # Ketebalan bingkai
-                        frame = cv2.rectangle(frame, start_point, end_point, color, thickness)
-
-                    # Menampilkan hasil prediksi pada frame
-                    cv2.putText(frame, f"Prediction: {class_label}", (10, 30), cv2.FONT_HERSHEY_DUPLEX, 1, (255, 0, 0), 2, cv2.LINE_AA)
-
-            # Menyimpan frame saat ini sebagai previous_frame
-            previous_frame = gray_frame
-
-            # Menampilkan frame di Streamlit
-            stframe.image(frame, channels="BGR")
-
-            # Menyimpan frame ke dalam folder saved_images
-            frame_filename = f'frame_{int(cap.get(cv2.CAP_PROP_POS_FRAMES))}.jpg'
-            save_image_with_metadata(Image.fromarray(frame), st.session_state.get("username"), frame_filename)
-
-        cap.release()
-    else:
-        st.write("Nyalakan kamera untuk memulai klasifikasi.")
+        # Menyimpan gambar ke dalam folder saved_images
+        save_image_with_metadata(img, st.session_state.get("username"), "webcam_image.jpg")
 
     # Upload gambar
     uploaded_file = st.file_uploader("Unggah Gambar Tomat", type=["jpg", "jpeg", "png"])
@@ -151,6 +107,7 @@ def camera_scan_page():
 
         # Menyimpan gambar yang diunggah ke dalam folder saved_images
         save_image_with_metadata(image, st.session_state.get("username"), uploaded_file.name)
+
 
 # Halaman untuk menampilkan galeri gambar
 def gallery_and_details_page():
