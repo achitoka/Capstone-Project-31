@@ -91,7 +91,7 @@ def camera_scan_page():
     stframe = st.empty()
 
     if run:
-        cap = cv2.VideoCapture(0)
+        cap = cv2.VideoCapture(1)
         previous_frame = None
         while cap.isOpened():
             ret, frame = cap.read()
