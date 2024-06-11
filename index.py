@@ -77,7 +77,18 @@ def camera_scan_page():
     stframe = st.empty()
 
     if run:
-        cap = cv2.VideoCapture(0)
+        # Coba buka kamera dengan indeks yang berbeda
+        cap = None
+        for i in range(5):  # Coba hingga 5 perangkat
+            cap = cv2.VideoCapture(i)
+            if cap.isOpened():
+                st.write(f"Kamera ditemukan pada indeks {i}")
+                break
+            cap.release()
+        else:
+            st.write("Tidak ada kamera yang tersedia.")
+            return
+
         previous_frame = None
         while cap.isOpened():
             ret, frame = cap.read()
