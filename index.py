@@ -9,15 +9,8 @@ import os
 # Fungsi untuk memuat model Keras (.h5)
 @st.cache_resource
 def load_keras_model(model_path):
-    try:
-        if not os.path.exists(model_path):
-            st.error(f"File model tidak ditemukan: {model_path}")
-            return None
-        model = load_model(model_path)
-        return model
-    except Exception as e:
-        st.error(f"Gagal memuat model: {e}")
-        return None
+    model = load_model(model_path)
+    return model
 
 # Fungsi untuk memproses dan memprediksi gambar
 def predict_image(image, model):
@@ -58,7 +51,7 @@ if not os.path.exists('saved_images'):
     os.makedirs('saved_images')
 
 # Memuat model Keras (.h5)
-model_path = os.path.abspath("finalModel_31.h5")
+model_path = load_keras_model("finalModel_31.h5")
 
 # Definisi halaman
 def homepage():
