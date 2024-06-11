@@ -4,4 +4,4 @@ Pillow
 numpy
 tensorflow
 opencv-python-headless
-h5py==2.10.1
+h5py==3.10.1
