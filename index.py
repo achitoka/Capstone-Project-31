@@ -85,8 +85,7 @@ def camera_scan_page():
         st.write(f"Prediction: {class_label}")
     
         # Menyimpan gambar ke dalam folder saved_images
-        frame_filename = f'frame_{int(cap.get(cv2.CAP_PROP_POS_FRAMES))}.jpg'
-        save_image_with_metadata(img, st.session_state.get("username"), frame_filename)
+        save_image_with_metadata(img, st.session_state.get("username"), 'frame.jpg')
 
     # Upload gambar
     uploaded_file = st.file_uploader("Unggah Gambar Tomat", type=["jpg", "jpeg", "png"])
