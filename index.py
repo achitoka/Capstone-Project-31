@@ -15,24 +15,28 @@ def homepage():
     st.write("Solusi Real-time untuk memastikan kualitas tomat. Aplikasi ini dirancang untuk memindai dan mengklasifikasi tomat.")
     st.image("welcome.png", use_column_width=True)
 
-# Thread untuk pemindaian kamera
-camera_thread = threading.Thread(target=camera_scanner)
-
-# Halaman untuk melakukan pemindaian kamera
 def camera_scan_page():
     st.header("Pemindaian Kamera")
 
-    # Tombol untuk memulai dan menghentikan pemindaian kamera
-    if not st.session_state.is_camera_running:
-        start_button = st.button("Mulai Pemindaian Kamera")
-    else:
-        stop_button = st.button("Berhenti")
+    # Mengambil gambar dari webcam
+    picture = st.camera_input("Jepret Gambar")
 
-    # Memulai atau menghentikan pemindaian kamera berdasarkan tombol yang ditekan
-    if not st.session_state.is_camera_running and "start_button" in st.session_state:
-        start_camera_scanner()
-    elif st.session_state.is_camera_running and "stop_button" in st.session_state:
-        stop_camera_scanner()
+    if picture:
+        # Membaca gambar
+        img = Image.open(picture)
+        st.image(img, caption='Gambar dari Kamera', use_column_width=True)
+
+        # Konversi gambar ke array numpy
+        img_array = np.array(img)
+
+        # Melakukan prediksi pada gambar yang diambil
+        predictions = predict_image(img_array, model)
+        class_label = get_class_label(predictions)[0]
+
+        st.write(f"Prediction: {class_label}")
+
+        # Menyimpan gambar ke dalam folder saved_images
+        save_image_with_metadata(img, st.session_state.get("username"), "webcam_image.jpg")
 
     # Upload gambar
     uploaded_file = st.file_uploader("Unggah Gambar Tomat", type=["jpg", "jpeg", "png"])
@@ -52,6 +56,23 @@ def camera_scan_page():
         # Menyimpan gambar yang diunggah ke dalam folder saved_images
         save_image_with_metadata(image, st.session_state.get("username"), uploaded_file.name)
 
+    # Upload gambar
+    uploaded_file = st.file_uploader("Unggah Gambar Tomat", type=["jpg", "jpeg", "png"])
+    if uploaded_file is not None:
+        image = Image.open(uploaded_file)
+        st.image(image, caption='Gambar Tomat yang Diunggah', use_column_width=True)
+
+        # Konversi gambar ke array numpy
+        img_array = np.array(image)
+
+        # Melakukan prediksi pada gambar yang diunggah
+        predictions = predict_image(img_array, model)
+        class_label = get_class_label(predictions)[0]
+
+        st.write(f"Prediction: {class_label}")
+
+        # Menyimpan gambar yang diunggah ke dalam folder saved_images
+        save_image_with_metadata(image, st.session_state.get("username"), uploaded_file.name)
 
 # Halaman untuk menampilkan galeri gambar
 def gallery_and_details_page():
@@ -145,32 +166,3 @@ def get_prediction_description(class_label):
         'Old': 'Tomat sudah tua dan mungkin tidak segar lagi.'
     }
     return descriptions.get(class_label, 'Deskripsi tidak tersedia.')
-
-# Fungsi untuk melakukan pemindaian kamera secara terus menerus dan menyimpan gambar
-def camera_scanner():
-    while st.session_state.is_camera_running:
-        picture = st.camera_input("Jalankan Kamera")
-
-        if picture:
-            # Membaca gambar
-            img = Image.open(picture)
-            st.image(img, caption='Gambar dari Kamera', use_column_width=True)
-            
-            # Konversi gambar ke array numpy
-            img_array = np.array(image)
-        
-            # Melakukan prediksi pada gambar yang diambil
-            predictions = predict_image(img_array, model)
-            class_label = get_class_label(predictions)[0]
-        
-            # Menyimpan gambar ke dalam folder saved_images
-            save_image_with_metadata(image, st.session_state.get("username"), f"frame_{class_label}.jpg")
-
-# Fungsi untuk memulai pemindaian kamera
-def start_camera_scanner():
-    st.session_state.is_camera_running = True
-    camera_thread.start()
-
-# Fungsi untuk menghentikan pemindaian kamera
-def stop_camera_scanner():
-    st.session_state.is_camera_running = False
