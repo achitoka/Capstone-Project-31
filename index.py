@@ -6,44 +6,6 @@ from tensorflow.keras.models import load_model
 import cv2
 import os
 
-# Fungsi untuk memproses dan memprediksi gambar
-def predict_image(image, model):
-    if model is None:
-        return None
-    # Mengubah ukuran gambar sesuai kebutuhan model (misalnya 224x224)
-    img = cv2.resize(image, (224, 224))
-    # Mengubah gambar menjadi array numpy
-    img_array = np.array(img)
-    # Menambahkan dimensi batch
-    img_array = np.expand_dims(img_array, axis=0)
-    # Melakukan normalisasi jika diperlukan
-    img_array = img_array / 255.0
-    # Melakukan prediksi
-    predictions = model.predict(img_array)
-    return predictions
-
-# Fungsi untuk memetakan prediksi ke label kelas asli
-def get_class_label(predictions):
-    if predictions is None:
-        return ["Error"]
-    class_labels = ['Ripe', 'Unripe', 'Damaged', 'Old']
-    class_index = np.argmax(predictions, axis=1)
-    return [class_labels[index] for index in class_index]
-
-# Fungsi untuk memberikan deskripsi dari setiap kelas prediksi
-def get_prediction_description(class_label):
-    descriptions = {
-        'Ripe': 'Tomat dalam kondisi matang dan siap untuk dikonsumsi.',
-        'Unripe': 'Tomat masih mentah dan belum siap untuk dikonsumsi.',
-        'Damaged': 'Tomat mengalami kerusakan dan tidak layak untuk dikonsumsi.',
-        'Old': 'Tomat sudah tua dan mungkin tidak segar lagi.'
-    }
-    return descriptions.get(class_label, 'Deskripsi tidak tersedia.')
-
-# Membuat folder saved_images jika belum ada
-if not os.path.exists('saved_images'):
-    os.makedirs('saved_images')
-
 # Memuat model Keras (.h5)
 model = load_model("finalModel_31.h5")
 
@@ -53,42 +15,24 @@ def homepage():
     st.write("Solusi Real-time untuk memastikan kualitas tomat. Aplikasi ini dirancang untuk memindai dan mengklasifikasi tomat.")
     st.image("welcome.png", use_column_width=True)
 
-# Fungsi untuk menyimpan gambar dengan metadata pemilik
-def save_image_with_metadata(image, user_id, filename):
-    img_save_path = f'saved_images/{user_id}_{filename}'
-    image.save(img_save_path)
+# Thread untuk pemindaian kamera
+camera_thread = threading.Thread(target=camera_scanner)
 
-# Fungsi untuk memuat daftar gambar yang dimiliki oleh pengguna saat ini
-def get_user_images(user_id):
-    user_images = []
-    image_files = os.listdir('saved_images')
-    for img_file in image_files:
-        if img_file.startswith(f"{user_id}_"):
-            user_images.append(img_file)
-    return user_images
-
+# Halaman untuk melakukan pemindaian kamera
 def camera_scan_page():
     st.header("Pemindaian Kamera")
 
-    # Mengambil gambar dari webcam
-    picture = st.camera_input("Jalankan Kamera")
+    # Tombol untuk memulai dan menghentikan pemindaian kamera
+    if not st.session_state.is_camera_running:
+        start_button = st.button("Mulai Pemindaian Kamera")
+    else:
+        stop_button = st.button("Berhenti")
 
-    if picture:
-        # Membaca gambar
-        img = Image.open(picture)
-        st.image(img, caption='Gambar dari Kamera', use_column_width=True)
-
-        # Konversi gambar ke array numpy
-        img_array = np.array(img)
-
-        # Melakukan prediksi pada gambar yang diambil
-        predictions = predict_image(img_array, model)
-        class_label = get_class_label(predictions)[0]
-
-        st.write(f"Prediction: {class_label}")
-
-        # Menyimpan gambar ke dalam folder saved_images
-        save_image_with_metadata(img, st.session_state.get("username"), "webcam_image.jpg")
+    # Memulai atau menghentikan pemindaian kamera berdasarkan tombol yang ditekan
+    if not st.session_state.is_camera_running and "start_button" in st.session_state:
+        start_camera_scanner()
+    elif st.session_state.is_camera_running and "stop_button" in st.session_state:
+        stop_camera_scanner()
 
     # Upload gambar
     uploaded_file = st.file_uploader("Unggah Gambar Tomat", type=["jpg", "jpeg", "png"])
@@ -148,12 +92,85 @@ def gallery_and_details_page():
                 os.remove(img_path)
                 st.experimental_rerun()
 
-# Tentukan halaman yang akan ditampilkan
-page_names_to_funcs = {
-    "Beranda": homepage,
-    "Pemindaian Kamera": camera_scan_page,
-    "Galeri dan Rincian": gallery_and_details_page,
-}
+####################################################################################
 
-selected_page = st.sidebar.selectbox("Pilih halaman", page_names_to_funcs.keys())
-page_names_to_funcs[selected_page]()
+# Fungsi untuk memproses dan memprediksi gambar
+def predict_image(image, model):
+    if model is None:
+        return None
+    # Mengubah ukuran gambar sesuai kebutuhan model (misalnya 224x224)
+    img = cv2.resize(image, (224, 224))
+    # Mengubah gambar menjadi array numpy
+    img_array = np.array(img)
+    # Menambahkan dimensi batch
+    img_array = np.expand_dims(img_array, axis=0)
+    # Melakukan normalisasi jika diperlukan
+    img_array = img_array / 255.0
+    # Melakukan prediksi
+    predictions = model.predict(img_array)
+    return predictions
+
+# Fungsi untuk memetakan prediksi ke label kelas asli
+def get_class_label(predictions):
+    if predictions is None:
+        return ["Error"]
+    class_labels = ['Ripe', 'Unripe', 'Damaged', 'Old']
+    class_index = np.argmax(predictions, axis=1)
+    return [class_labels[index] for index in class_index]
+
+# Membuat folder saved_images jika belum ada
+if not os.path.exists('saved_images'):
+    os.makedirs('saved_images')
+
+# Fungsi untuk menyimpan gambar dengan metadata pemilik
+def save_image_with_metadata(image, user_id, filename):
+    img_save_path = f'saved_images/{user_id}_{filename}'
+    image.save(img_save_path)
+
+# Fungsi untuk memuat daftar gambar yang dimiliki oleh pengguna saat ini
+def get_user_images(user_id):
+    user_images = []
+    image_files = os.listdir('saved_images')
+    for img_file in image_files:
+        if img_file.startswith(f"{user_id}_"):
+            user_images.append(img_file)
+    return user_images
+
+# Fungsi untuk memberikan deskripsi dari setiap kelas prediksi
+def get_prediction_description(class_label):
+    descriptions = {
+        'Ripe': 'Tomat dalam kondisi matang dan siap untuk dikonsumsi.',
+        'Unripe': 'Tomat masih mentah dan belum siap untuk dikonsumsi.',
+        'Damaged': 'Tomat mengalami kerusakan dan tidak layak untuk dikonsumsi.',
+        'Old': 'Tomat sudah tua dan mungkin tidak segar lagi.'
+    }
+    return descriptions.get(class_label, 'Deskripsi tidak tersedia.')
+
+# Fungsi untuk melakukan pemindaian kamera secara terus menerus dan menyimpan gambar
+def camera_scanner():
+    while st.session_state.is_camera_running:
+        picture = st.camera_input("Jalankan Kamera")
+
+        if picture:
+            # Membaca gambar
+            img = Image.open(picture)
+            st.image(img, caption='Gambar dari Kamera', use_column_width=True)
+            
+            # Konversi gambar ke array numpy
+            img_array = np.array(image)
+        
+            # Melakukan prediksi pada gambar yang diambil
+            predictions = predict_image(img_array, model)
+            class_label = get_class_label(predictions)[0]
+        
+            # Menyimpan gambar ke dalam folder saved_images
+            save_image_with_metadata(image, st.session_state.get("username"), f"frame_{class_label}.jpg")
+
+# Fungsi untuk memulai pemindaian kamera
+def start_camera_scanner():
+    st.session_state.is_camera_running = True
+    camera_thread.start()
+
+# Fungsi untuk menghentikan pemindaian kamera
+def stop_camera_scanner():
+    st.session_state.is_camera_running = False
