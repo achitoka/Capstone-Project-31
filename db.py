@@ -1,32 +1,32 @@
-# import sqlite3
+import sqlite3
 
-# def create_connection(db_file):
-#     conn = None
-#     try:
-#         conn = sqlite3.connect(db_file)
-#         print("Koneksi ke database berhasil.")
-#         create_table(conn)
-#     except sqlite3.Error as e:
-#         print(e)
-#     finally:
-#         if conn:
-#             conn.close()
-#             print("Database ditutup.")
+# Konfigurasi koneksi ke database SQLite
+db_config = 'dbtomat.db'  # Nama file database SQLite
 
-# def create_table(conn):
-#     try:
-#         cursor = conn.cursor()
-#         cursor.execute('''
-#             CREATE TABLE IF NOT EXISTS users (
-#                 id INTEGER PRIMARY KEY AUTOINCREMENT,
-#                 username TEXT NOT NULL UNIQUE,
-#                 password TEXT NOT NULL
-#             )
-#         ''')
-#         conn.commit()
-#         print("Tabel users berhasil dibuat.")
-#     except sqlite3.Error as e:
-#         print(e)
+# Fungsi untuk membuat koneksi ke database SQLite
+def get_db_connection():
+    try:
+        conn = sqlite3.connect(db_config)
+        return conn
+    except sqlite3.Error as e:
+        print(f"Error: {e}")
+        return None
 
-# if __name__ == '__main__':
-#     create_connection("dbtomat.db")
+def create_user_table():
+    conn = get_db_connection()
+    if conn:
+        cursor = conn.cursor()
+        cursor.execute('''
+            CREATE TABLE IF NOT EXISTS users (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                username TEXT NOT NULL UNIQUE,
+                password TEXT NOT NULL
+            )
+        ''')
+        conn.commit()
+        conn.close()
+
+
+if __name__ == '__main__':
+    get_db_connection()
+    create_user_table()
