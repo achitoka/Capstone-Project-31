@@ -5,7 +5,17 @@ from index import camera_scan_page, gallery_and_details_page, homepage
 from auth import get_db_connection
 
 def set_custom_css():
-    theme = st.get_option("theme")
+    if "theme" not in st.session_state:
+        # Menyimpan status tema saat ini
+        st.session_state.theme = st.get_option("theme")
+
+    # Memeriksa apakah tema berubah
+    if st.get_option("theme") != st.session_state.theme:
+        st.session_state.theme = st.get_option("theme")
+        apply_custom_css()
+
+def apply_custom_css():
+    theme = st.session_state.theme
     if theme == "light":
         st.markdown(
             """
