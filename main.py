@@ -5,19 +5,21 @@ from index import camera_scan_page, gallery_and_details_page, homepage
 from auth import get_db_connection
 
 def set_custom_css():
-    st.markdown(
-        """
-        <style>
-            .main {
-                background-color: #cdedb7 !important;  
-            }
-            .main .sidebar .sidebar-content {
-                background-color: #d3d3d3 !important;  
-            }
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
+    theme = st.get_option("theme")
+    if theme == "light":
+        st.markdown(
+            """
+            <style>
+                .main {
+                    background-color: #cdedb7 !important;  
+                }
+                .main .sidebar .sidebar-content {
+                    background-color: #d3d3d3 !important;  
+                }
+            </style>
+            """,
+            unsafe_allow_html=True
+        )
 
 def main():
     set_custom_css()
