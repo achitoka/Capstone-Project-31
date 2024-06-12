@@ -4,62 +4,23 @@ from signup import signup_page
 from index import camera_scan_page, gallery_and_details_page, homepage
 from auth import get_db_connection
 
-def set_custom_css():
-    # Menambahkan elemen HTML untuk mendeteksi tema
-    st.markdown("""
-        <div id="themeDetector" style="display: none;"></div>
-    """, unsafe_allow_html=True)
-
-    # Menambahkan script JavaScript untuk mendeteksi tema dan memperbarui session_state
-    st.markdown("""
-        <script>
-            const themeDetector = document.getElementById('themeDetector');
-            const isDarkTheme = window.getComputedStyle(themeDetector).getPropertyValue('color') === 'rgb(255, 255, 255)';
-            const sessionId = Streamlit.sessionId;
-            const isDarkThemeKey = sessionId + ':is_dark_theme';
-            sessionStorage.setItem(isDarkThemeKey, JSON.stringify(isDarkTheme));
-            Streamlit.setComponentValue(isDarkTheme);
-        </script>
-    """, unsafe_allow_html=True)
-
-def apply_custom_css(is_dark_theme):
-    if is_dark_theme:
-        st.markdown(
-            """
-            <style>
-                body {
-                    background-color: #121212 !important;  
-                }
-                .sidebar-content {
-                    background-color: #1f1f1f !important;  
-                }
-            </style>
-            """,
-            unsafe_allow_html=True
-        )
-    else:
-        st.markdown(
-            """
-            <style>
-                body {
-                    background-color: #cdedb7 !important;  
-                }
-                .sidebar-content {
-                    background-color: #d3d3d3 !important;  
-                }
-            </style>
-            """,
-            unsafe_allow_html=True
-        )
+# def set_custom_css():
+#     st.markdown(
+#         """
+#         <style>
+#             .main {
+#                 background-color: #cdedb7 !important;  
+#             }
+#             .main .sidebar .sidebar-content {
+#                 background-color: #d3d3d3 !important;  
+#             }
+#         </style>
+#         """,
+#         unsafe_allow_html=True
+#     )
 
 def main():
-    is_dark_theme = st.session_state.get("is_dark_theme")
-    if is_dark_theme is None:
-        set_custom_css()
-        is_dark_theme = st.session_state.is_dark_theme
-    apply_custom_css(is_dark_theme)
-
-    st.sidebar.title("Navigasi")
+    #set_custom_css()
 
     # Periksa koneksi database dan tampilkan status
     if get_db_connection():
