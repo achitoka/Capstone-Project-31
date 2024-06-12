@@ -2,7 +2,7 @@ import streamlit as st
 from login import login_page
 from signup import signup_page
 from index import camera_scan_page, gallery_and_details_page, homepage
-from auth import get_db_connection
+from db import get_db_connection
 
 # def set_custom_css():
 #     st.markdown(
