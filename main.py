@@ -27,9 +27,6 @@ def set_custom_css():
 def main():
     set_custom_css()
 
-def main():
-    set_custom_css()
-
     st.sidebar.title("Navigasi")
 
     # Periksa koneksi database dan tampilkan status
