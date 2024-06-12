@@ -4,4 +4,3 @@ Pillow
 numpy
 tensorflow
 opencv-python-headless
-threading
