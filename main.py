@@ -5,16 +5,19 @@ from index import camera_scan_page, gallery_and_details_page, homepage
 from auth import get_db_connection
 
 def set_custom_css():
-    # Menambahkan elemen HTML ke halaman untuk mendeteksi tema
+    # Menambahkan elemen HTML untuk mendeteksi tema
     st.markdown("""
-        <div id="themeDetector"></div>
+        <div id="themeDetector" style="display: none;"></div>
     """, unsafe_allow_html=True)
 
-    # Menambahkan script JavaScript untuk mendeteksi tema dan memanggil fungsi apply_custom_css
+    # Menambahkan script JavaScript untuk mendeteksi tema dan memperbarui session_state
     st.markdown("""
         <script>
             const themeDetector = document.getElementById('themeDetector');
             const isDarkTheme = window.getComputedStyle(themeDetector).getPropertyValue('color') === 'rgb(255, 255, 255)';
+            const sessionId = Streamlit.sessionId;
+            const isDarkThemeKey = sessionId + ':is_dark_theme';
+            sessionStorage.setItem(isDarkThemeKey, JSON.stringify(isDarkTheme));
             Streamlit.setComponentValue(isDarkTheme);
         </script>
     """, unsafe_allow_html=True)
@@ -24,10 +27,10 @@ def apply_custom_css(is_dark_theme):
         st.markdown(
             """
             <style>
-                .main {
+                body {
                     background-color: #121212 !important;  
                 }
-                .main .sidebar .sidebar-content {
+                .sidebar-content {
                     background-color: #1f1f1f !important;  
                 }
             </style>
@@ -38,10 +41,10 @@ def apply_custom_css(is_dark_theme):
         st.markdown(
             """
             <style>
-                .main {
+                body {
                     background-color: #cdedb7 !important;  
                 }
-                .main .sidebar .sidebar-content {
+                .sidebar-content {
                     background-color: #d3d3d3 !important;  
                 }
             </style>
@@ -91,4 +94,3 @@ def main():
             
 if __name__ == "__main__":
     main()
-low_html=True
