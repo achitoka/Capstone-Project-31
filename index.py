@@ -19,7 +19,7 @@ def camera_scan_page():
     st.header("Pemindaian Kamera")
 
     # Mengambil gambar dari webcam
-    picture = st.camera_input("Jepret Gambar")
+    picture = st.camera_input("Tangkap Gambar")
 
     if picture:
         # Membaca gambar
