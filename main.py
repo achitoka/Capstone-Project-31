@@ -9,7 +9,7 @@ def set_custom_css():
     is_dark_theme = st.markdown("""<style>#sidebar { color: white; }</style>""", unsafe_allow_html=True)
 
     # Terapkan CSS kustom untuk tema terang
-    if !is_dark_theme:
+    if not(is_dark_theme):
         st.markdown(
             """
             <style>
