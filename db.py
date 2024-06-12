@@ -29,4 +29,4 @@ def create_table(conn):
         print(e)
 
 if __name__ == '__main__':
-    create_connection("user.db")
+    create_connection("dbtomat.db")
