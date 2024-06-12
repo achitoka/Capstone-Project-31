@@ -1,4 +1,6 @@
 import bcrypt
+import sqlite3
+from db import get_db_connection
 
 def add_user(username, password):
     try:
