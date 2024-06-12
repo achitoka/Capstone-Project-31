@@ -5,18 +5,11 @@ from index import camera_scan_page, gallery_and_details_page, homepage
 from auth import get_db_connection
 
 def set_custom_css():
-    if "theme" not in st.session_state:
-        # Menyimpan status tema saat ini
-        st.session_state.theme = st.get_option("theme")
+    # Cek apakah elemen sidebar memiliki atribut dark untuk mendeteksi tema gelap
+    is_dark_theme = st.markdown("""<style>#sidebar { color: white; }</style>""", unsafe_allow_html=True)
 
-    # Memeriksa apakah tema berubah
-    if st.get_option("theme") != st.session_state.theme:
-        st.session_state.theme = st.get_option("theme")
-        apply_custom_css()
-
-def apply_custom_css():
-    theme = st.session_state.theme
-    if theme == "light":
+    # Terapkan CSS kustom untuk tema terang
+    if !is_dark_theme:
         st.markdown(
             """
             <style>
@@ -30,6 +23,9 @@ def apply_custom_css():
             """,
             unsafe_allow_html=True
         )
+
+def main():
+    set_custom_css()
 
 def main():
     set_custom_css()
