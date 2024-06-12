@@ -5,11 +5,36 @@ from index import camera_scan_page, gallery_and_details_page, homepage
 from auth import get_db_connection
 
 def set_custom_css():
-    # Cek apakah elemen sidebar memiliki atribut dark untuk mendeteksi tema gelap
-    is_dark_theme = st.markdown("""<style>#sidebar { color: white; }</style>""", unsafe_allow_html=True)
+    # Menambahkan elemen HTML ke halaman untuk mendeteksi tema
+    st.markdown("""
+        <div id="themeDetector"></div>
+    """, unsafe_allow_html=True)
 
-    # Terapkan CSS kustom untuk tema terang
-    if not(is_dark_theme):
+    # Menambahkan script JavaScript untuk mendeteksi tema dan memanggil fungsi apply_custom_css
+    st.markdown("""
+        <script>
+            const themeDetector = document.getElementById('themeDetector');
+            const isDarkTheme = window.getComputedStyle(themeDetector).getPropertyValue('color') === 'rgb(255, 255, 255)';
+            Streamlit.setComponentValue(isDarkTheme);
+        </script>
+    """, unsafe_allow_html=True)
+
+def apply_custom_css(is_dark_theme):
+    if is_dark_theme:
+        st.markdown(
+            """
+            <style>
+                .main {
+                    background-color: #121212 !important;  
+                }
+                .main .sidebar .sidebar-content {
+                    background-color: #1f1f1f !important;  
+                }
+            </style>
+            """,
+            unsafe_allow_html=True
+        )
+    else:
         st.markdown(
             """
             <style>
@@ -25,7 +50,11 @@ def set_custom_css():
         )
 
 def main():
-    set_custom_css()
+    is_dark_theme = st.session_state.get("is_dark_theme")
+    if is_dark_theme is None:
+        set_custom_css()
+        is_dark_theme = st.session_state.is_dark_theme
+    apply_custom_css(is_dark_theme)
 
     st.sidebar.title("Navigasi")
 
@@ -62,3 +91,4 @@ def main():
             
 if __name__ == "__main__":
     main()
+low_html=True
