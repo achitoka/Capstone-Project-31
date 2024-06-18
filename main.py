@@ -3,8 +3,6 @@ from login import login_page
 from signup import signup_page
 from index import camera_scan_page, gallery_and_details_page, homepage
 from auth import get_db_connection
-# Pemanggilan clear_users() dalam skenario pengembangan
-from auth import clear_users
 
 # def set_custom_css():
 #     st.markdown(
