@@ -21,6 +21,8 @@ def login_page():
             st.success("Login berhasil!")
             st.session_state["logged_in"] = True
             st.session_state["username"] = username
+            # Clear CAPTCHA setelah berhasil login
+            del st.session_state["generated_captcha"]
             st.experimental_rerun()
         else:
             st.error("Username atau password salah")
