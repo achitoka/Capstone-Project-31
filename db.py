@@ -1,4 +1,4 @@
-import sqlite
+import sqlite3
 
 db_config = 'dbtomat.db'
 # Fungsi untuk membuat koneksi ke database SQLite
