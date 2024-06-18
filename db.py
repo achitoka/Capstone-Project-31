@@ -28,5 +28,4 @@ def create_user_table():
 
 
 if __name__ == '__main__':
-    get_db_connection()
     create_user_table()
