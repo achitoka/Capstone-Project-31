@@ -30,9 +30,6 @@ def main():
     else:
         st.sidebar.error("Gagal terhubung ke database")
 
-    # Memanggil clear_users() untuk mengosongkan tabel pengguna saat mengembangkan aplikasi
-    clear_users()
-
     if "logged_in" not in st.session_state:
         st.session_state["logged_in"] = False
 
