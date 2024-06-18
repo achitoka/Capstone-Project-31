@@ -25,7 +25,3 @@ def create_user_table():
         ''')
         conn.commit()
         conn.close()
-
-
-if __name__ == '__main__':
-    create_user_table()
