@@ -74,17 +74,4 @@ def verify_user(username, password):
             conn.close()
     return False
 
-def clear_users():
-    conn = get_db_connection()
-    if conn:
-        try:
-            cursor = conn.cursor()
-            cursor.execute('DELETE FROM users')
-            conn.commit()
-            print("Semua pengguna telah dihapus.")
-        except sqlite3.Error as err:
-            print(f"Error: {err}")
-        finally:
-            conn.close()
-
 create_user_table()  # Memastikan tabel pengguna telah dibuat saat modul dijalankan
