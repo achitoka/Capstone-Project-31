@@ -1,14 +1,4 @@
 import sqlite
-import os
-
-# Konfigurasi koneksi ke database SQLite
-db_config = 'dbtomat.db'  # Nama file database SQLite
-
-if os.path.exists(db_config):
-    os.remove(db_config)
-    print(f"{db_config} has been deleted.")
-else:
-    print(f"{db_config} does not exist.")
 
 db_config = 'dbtomat.db'
 
