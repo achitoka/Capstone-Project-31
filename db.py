@@ -1,4 +1,5 @@
-import sqlite3
+import sqlite
+import os
 
 # Konfigurasi koneksi ke database SQLite
 db_config = 'dbtomat.db'  # Nama file database SQLite
