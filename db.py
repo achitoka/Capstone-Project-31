@@ -1,7 +1,6 @@
 import sqlite
 
 db_config = 'dbtomat.db'
-
 # Fungsi untuk membuat koneksi ke database SQLite
 def get_db_connection():
     try:
