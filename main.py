@@ -3,6 +3,8 @@ from login import login_page
 from signup import signup_page
 from index import camera_scan_page, gallery_and_details_page, homepage
 from auth import get_db_connection
+# Pemanggilan clear_users() dalam skenario pengembangan
+from auth import clear_users
 
 # def set_custom_css():
 #     st.markdown(
@@ -27,6 +29,9 @@ def main():
         st.sidebar.success("Koneksi ke database berhasil")
     else:
         st.sidebar.error("Gagal terhubung ke database")
+
+    # Memanggil clear_users() untuk mengosongkan tabel pengguna saat mengembangkan aplikasi
+    clear_users()
 
     if "logged_in" not in st.session_state:
         st.session_state["logged_in"] = False
