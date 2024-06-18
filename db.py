@@ -1,7 +1,7 @@
 import sqlite3
 
 # Konfigurasi koneksi ke database SQLite
-db_config = 'dbtomatt.db'  # Nama file database SQLite
+db_config = 'dbtomat.db'  # Nama file database SQLite
 
 # Fungsi untuk membuat koneksi ke database SQLite
 def get_db_connection():
